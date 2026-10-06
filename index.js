@@ -1,9 +1,10 @@
 const express = require('express')
+const path = require('path')
 const app = express()
 const cors = require('cors')
 
 app.use(cors())
-app.use(express.static('dist'))
+app.use(express.static(path.join(__dirname, 'dist')))
 app.use(express.json())
 
 let notes = [
@@ -51,9 +52,6 @@ app.post('/api/notes', (request, response) => {
   response.json(note)
 })
 
-app.get('/', (request, response) => {
-  response.send('<h1>Hello World!</h1>')
-})
 
 app.get('/api/notes/:id', (request, response) => {
   const id = request.params.id
@@ -74,6 +72,10 @@ app.delete('/api/notes/:id', (request, response) => {
   notes = notes.filter(note => note.id !== id)
 
   response.status(204).end()
+})
+
+app.get('/*splat', (request, response) => {
+  response.sendFile(path.join(__dirname, 'dist', 'index.html'))
 })
 
 const PORT = process.env.PORT || 3001
